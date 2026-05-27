@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property Listing</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo"><span class="T-color">Trenzor Homes</span> and Properties</div>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Properties</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <button class="explore-btn">
+      Explore Properties
+    </button>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+
+    <div class="overlay"></div>
+
+    <div class="hero-content">
+      <h1>
+        Your Reliable Ally in <br>
+         Real Estate
+      </h1>
+
+      <!-- SEARCH BOX -->
+      <div class="search-box">
+
+        <div class="search-item">
+          <label>Type</label>
+          <select>
+            <option>Duplex</option>
+            <option>Apartment</option>
+            <option>Villa</option>
+          </select>
+        </div>
+
+        <div class="search-item">
+          <label>Price</label>
+          <select>
+            <option>₦5M - ₦20M</option>
+            <option>₦20M - ₦50M</option>
+            <option>₦50M+</option>
+          </select>
+        </div>
+
+        <div class="search-item">
+          <label>Area</label>
+          <select>
+            <option>Enugu</option>
+            <option>Lagos</option>
+            <option>Abuja</option>
+          </select>
+        </div>
+
+        <button class="search-btn">
+          <i class="fa fa-search"></i>
+          Search
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROPERTY SECTION -->
+  <section class="property-section">
+    <h2>Featured Properties</h2>
+    <div class="property-grid" id="propertyGrid">
+
+    </div>
+
+</section>
+  <script src="script.js"></script>
+</body>
+</html>
