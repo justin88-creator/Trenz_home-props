@@ -1,30 +1,25 @@
 backend:
-  name: github
-  repo: justin88-creator/Trenz_home-props
-  branch: main
+  name: test-repo
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "uploads"
+public_folder: "/uploads"
 
 collections:
   - name: "properties"
     label: "Properties"
-    folder: "content/properties"
-    create: true
+    files:
+      - label: "Property Listings"
+        name: "propertyListings"
+        file: "data/properties.json"
+        fields:
+          - label: "Properties"
+            name: "properties"
+            widget: "list"
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
 
-    fields:
-      - { label: "Property Title", name: "title", widget: "string" }
-
-      - { label: "Location", name: "location", widget: "string" }
-
-      - { label: "Price", name: "price", widget: "string" }
-
-      - { label: "Bedrooms", name: "bedrooms", widget: "number" }
-
-      - { label: "Bathrooms", name: "bathrooms", widget: "number" }
-
-      - { label: "Size", name: "size", widget: "string" }
-
-      - { label: "Status", name: "status", widget: "string" }
-
-      - { label: "Image", name: "image", widget: "image" }
+              - label: "Price"
+                name: "price"
+                widget: "string"
