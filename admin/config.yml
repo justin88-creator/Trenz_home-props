@@ -7,14 +7,17 @@ public_folder: "/uploads"
 collections:
   - name: "properties"
     label: "Properties"
+
     files:
       - label: "Property Listings"
         name: "propertyListings"
         file: "data/properties.json"
+
         fields:
           - label: "Properties"
             name: "properties"
             widget: "list"
+
             fields:
               - label: "Title"
                 name: "title"
