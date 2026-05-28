@@ -3,6 +3,8 @@ backend:
   repo: justin88-creator/Trenz_home-props
   branch: main
 
+site_domain: silly-cactus-f38173.netlify.app
+
 media_folder: "uploads"
 public_folder: "/uploads"
 
