@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: justin88-creator/Trenz_home-props
   branch: main
 
 media_folder: "uploads"
