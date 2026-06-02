@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Property Details</title>
+
+<link
+rel="stylesheet"
+href="style.css">
+
+<style>
+
+body{
+  background:#f4f4f4;
+}
+
+.property-details{
+  max-width:1200px;
+  margin:50px auto;
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 5px 20px rgba(0,0,0,.1);
+}
+
+.image-slider{
+  position:relative;
+}
+
+.property-image{
+  width:100%;
+  height:500px;
+  object-fit:cover;
+}
+
+.slider-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,.6);
+  color:white;
+  border:none;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:25px;
+  z-index:10;
+}
+
+.prev{
+  left:20px;
+}
+
+.next{
+  right:20px;
+}
+
+.details-content{
+  padding:40px;
+}
+
+.details-content h1{
+  margin:20px 0;
+  font-size:2.5rem;
+}
+
+.price{
+  color:#ff2a2a;
+  font-size:2rem;
+  margin-bottom:20px;
+}
+
+.property-info{
+  display:flex;
+  gap:30px;
+  margin:20px 0;
+  flex-wrap:wrap;
+}
+
+.property-info p{
+  background:#f4f4f4;
+  padding:12px 20px;
+  border-radius:10px;
+}
+
+.pay-btn{
+  background:#ff2a2a;
+  color:white;
+  border:none;
+  padding:15px 25px;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:30px;
+  font-size:18px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<section class="property-details">
+
+<div class="image-slider">
+
+<button
+class="slider-btn prev"
+onclick="prevImage()">
+❮
+</button>
+
+<img
+id="propertyImage"
+class="property-image">
+
+<button
+class="slider-btn next"
+onclick="nextImage()">
+❯
+</button>
+
+</div>
+
+<div class="details-content">
+
+<span
+class="badge"
+id="propertyStatus">
+</span>
+
+<h1 id="propertyTitle"></h1>
+
+<p
+class="location"
+id="propertyLocation">
+</p>
+
+<h2
+class="price"
+id="propertyPrice">
+</h2>
+
+<div class="property-info">
+
+<p id="propertyBeds"></p>
+<p id="propertyBaths"></p>
+<p id="propertySize"></p>
+
+</div>
+
+<p id="propertyDescription"></p>
+
+<button
+class="pay-btn"
+id="payBtn">
+
+Pay Inspection
+
+</button>
+
+</div>
+
+</section>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="property.js"></script>
+
+</body>
+</html>

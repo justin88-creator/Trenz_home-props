@@ -1,9 +1,7 @@
-backend:
-  name: github
-  repo: justin88-creator/Trenz_home-props
-  branch: main
+local_backend: true
 
-site_domain: silly-cactus-f38173.netlify.app
+backend:
+  name: test-repo
 
 media_folder: "uploads"
 public_folder: "/uploads"
@@ -18,11 +16,13 @@ collections:
         file: "data/properties.json"
 
         fields:
+
           - label: "Properties"
             name: "properties"
             widget: "list"
 
             fields:
+
               - label: "Title"
                 name: "title"
                 widget: "string"
@@ -35,17 +35,25 @@ collections:
                 name: "price"
                 widget: "string"
 
-              - label: "Image"
-                name: "image"
-                widget: "image"
+              # MULTIPLE IMAGES
+              - label: "Property Images"
+                name: "images"
+                widget: "list"
+
+                field:
+                  label: "Image"
+                  name: "image"
+                  widget: "image"
 
               - label: "Bedrooms"
                 name: "bedrooms"
                 widget: "number"
+                value_type: "int"
 
               - label: "Bathrooms"
                 name: "bathrooms"
                 widget: "number"
+                value_type: "int"
 
               - label: "Size"
                 name: "size"
@@ -53,7 +61,11 @@ collections:
 
               - label: "Status"
                 name: "status"
-                widget: "string"
+                widget: "select"
+
+                options:
+                  - "For Sale"
+                  - "For Rent"
 
               - label: "Description"
                 name: "description"
@@ -62,3 +74,4 @@ collections:
               - label: "Inspection Fee"
                 name: "inspectionFee"
                 widget: "number"
+                value_type: "int"

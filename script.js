@@ -1,63 +1,232 @@
 const propertyGrid =
-document.getElementById("propertyGrid");
+document.getElementById(
+"propertyGrid"
+);
 
-async function loadProperties() {
+const locationSelect =
+document.getElementById(
+"locationSelect"
+);
 
-  const response =
-  await fetch("data/properties.json");
+let allProperties = [];
 
-  const data =
-  await response.json();
 
-  propertyGrid.innerHTML = "";
+// FETCH PROPERTIES
+fetch("data/properties.json")
+.then(response =>
+response.json()
+)
 
-  data.properties.forEach(property => {
+.then(data => {
 
-    propertyGrid.innerHTML += `
-    
-      <div class="card">
+allProperties =
+data.properties;
 
-        <img src="${property.image}"
-        alt="${property.title}">
 
-        <div class="card-content">
+// AUTO LOCATION DROPDOWN
+loadLocations();
 
-          <span class="badge">
-            ${property.status}
-          </span>
 
-          <h3>${property.title}</h3>
+// Show newest 6
+const latestProperties =
+[...allProperties]
+.reverse()
+.slice(0, 6);
 
-          <p class="location">
-            📍 ${property.location}
-          </p>
+displayProperties(
+latestProperties
+);
 
-          <div class="details">
-            <span>${property.bedrooms} Bed</span>
-            <span>${property.bathrooms} Bath</span>
-            <span>${property.size}</span>
-          </div>
+})
 
-          <p>
-            ${property.description}
-          </p>
+.catch(error => {
 
-          <div class="card-footer">
+console.error(
+"Error loading properties:",
+error
+);
 
-            <h4>${property.price}</h4>
+});
 
-            <button class="details-btn">
-              View Details
-            </button>
 
-          </div>
+// LOAD LOCATIONS
+function loadLocations(){
 
-        </div>
+// Get unique locations
+const locations =
+[
+...new Set(
+allProperties.map(
+property =>
+property.location
+)
+)
+];
 
-      </div>
+// Add locations
+locations.forEach(
+location => {
 
-    `;
-  });
+locationSelect.innerHTML += `
+<option value="${location.toLowerCase()}">
+${location}
+</option>
+`;
+
+});
+
 }
 
-loadProperties();
+
+// DISPLAY PROPERTIES
+function displayProperties(
+properties
+){
+
+propertyGrid.innerHTML =
+"";
+
+properties.forEach(
+(property) => {
+
+const realIndex =
+allProperties.indexOf(
+property
+);
+
+propertyGrid.innerHTML += `
+<div class="card">
+
+<img
+src="${property.images[0]}"
+alt="${property.title}">
+
+<div class="card-content">
+
+<span class="badge">
+${property.status}
+</span>
+
+<h3>
+${property.title}
+</h3>
+
+<p class="location">
+📍 ${property.location}
+</p>
+
+<div class="details">
+
+<span>
+🛏 ${property.bedrooms}
+Beds
+</span>
+
+<span>
+🛁 ${property.bathrooms}
+Baths
+</span>
+
+<span>
+📐 ${property.size}
+</span>
+
+</div>
+
+<p>
+${property.description}
+</p>
+
+<div class="card-footer">
+
+<h4>
+${property.price}
+</h4>
+
+<a href="property.html?id=${realIndex}">
+<button class="details-btn">
+View Details
+</button>
+</a>
+
+</div>
+
+</div>
+
+</div>
+`;
+
+});
+
+}
+
+
+// SEARCH BUTTON
+document
+.getElementById(
+"searchBtn"
+)
+.addEventListener(
+"click",
+function(){
+
+const location =
+document
+.getElementById(
+"locationSelect"
+)
+.value
+.toLowerCase();
+
+const status =
+document
+.getElementById(
+"statusSelect"
+)
+.value
+.toLowerCase();
+
+const bedrooms =
+document
+.getElementById(
+"bedroomSelect"
+)
+.value;
+
+
+// FILTER
+const filtered =
+allProperties.filter(
+property => {
+
+const matchLocation =
+!location ||
+property.location
+.toLowerCase()
+.includes(location);
+
+const matchStatus =
+!status ||
+property.status
+.toLowerCase() ===
+status;
+
+const matchBedrooms =
+!bedrooms ||
+property.bedrooms >=
+parseInt(bedrooms);
+
+return (
+matchLocation &&
+matchStatus &&
+matchBedrooms
+);
+
+});
+
+displayProperties(
+[...filtered]
+.reverse()
+);
+
+});
