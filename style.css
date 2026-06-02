@@ -571,3 +571,65 @@ body{
   cursor:pointer;
   font-size:16px;
 }
+
+/* BOOKING MODAL */
+.booking-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.booking-box{
+  background:white;
+  width:90%;
+  max-width:420px;
+  padding:30px;
+  border-radius:20px;
+  position:relative;
+}
+
+.booking-box h2{
+  margin-bottom:15px;
+}
+
+.booking-note{
+  color:#666;
+  margin-bottom:20px;
+}
+
+.booking-box input,
+.booking-box select{
+  width:100%;
+  padding:14px;
+  margin-bottom:15px;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+
+.book-now-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  background:#ff2a2a;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.booking-help{
+  margin-top:15px;
+  text-align:center;
+  color:#555;
+}
+
+.close-modal{
+  position:absolute;
+  top:15px;
+  right:20px;
+  font-size:28px;
+  cursor:pointer;
+}

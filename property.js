@@ -1,3 +1,46 @@
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+addDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
+
+authDomain:
+"trenzorhomesadmin.firebaseapp.com",
+
+projectId:
+"trenzorhomesadmin",
+
+storageBucket:
+"trenzorhomesadmin.firebasestorage.app",
+
+messagingSenderId:
+"992246313430",
+
+appId:
+"1:992246313430:web:ea1390019bf9f8f7423477"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+
+// URL PARAMS
 const params =
 new URLSearchParams(
 window.location.search
@@ -6,9 +49,10 @@ window.location.search
 const propertyId =
 params.get("id");
 
-let currentImage = 0;
-let propertyImages = [];
+let propertyData;
 
+
+// LOAD PROPERTY
 fetch("data/properties.json")
 .then(response =>
 response.json()
@@ -16,227 +60,218 @@ response.json()
 
 .then(data => {
 
-const property =
+propertyData =
 data.properties[propertyId];
 
-// Safety check
-if(!property){
-  document.body.innerHTML =
-  "<h1>Property not found</h1>";
-  return;
-}
-
-// Multiple images
-propertyImages =
-property.images || [];
-
-// Show first image
 document.getElementById(
 "propertyImage"
 ).src =
-propertyImages[0];
+propertyData.images[0];
 
-// Property details
 document.getElementById(
 "propertyTitle"
 ).innerText =
-property.title;
+propertyData.title;
 
 document.getElementById(
 "propertyLocation"
 ).innerText =
 "📍 " +
-property.location;
+propertyData.location;
 
 document.getElementById(
 "propertyPrice"
 ).innerText =
-property.price;
+propertyData.price;
 
 document.getElementById(
 "propertyBeds"
 ).innerText =
 "🛏 " +
-property.bedrooms +
+propertyData.bedrooms +
 " Bedrooms";
 
 document.getElementById(
 "propertyBaths"
 ).innerText =
 "🛁 " +
-property.bathrooms +
+propertyData.bathrooms +
 " Bathrooms";
 
 document.getElementById(
 "propertySize"
 ).innerText =
 "📐 " +
-property.size;
+propertyData.size;
 
 document.getElementById(
 "propertyDescription"
 ).innerText =
-property.description;
+propertyData.description;
 
 document.getElementById(
 "propertyStatus"
 ).innerText =
-property.status;
+propertyData.status;
 
-// Pay button
+
 document.getElementById(
-"payBtn"
+"bookBtn"
 ).onclick =
-() => {
+openBooking;
 
-payInspection(
-property.title,
-property.inspectionFee
-);
+});
+
+
+// OPEN MODAL
+window.openBooking =
+function(){
+
+document.getElementById(
+"bookingModal"
+).style.display =
+"flex";
 
 };
 
-})
 
-.catch(error => {
-
-console.error(
-"Error loading property:",
-error
-);
-
-});
-
-
-// NEXT IMAGE
-function nextImage(){
-
-currentImage++;
-
-if(
-currentImage >=
-propertyImages.length
-){
-currentImage = 0;
-}
+// CLOSE MODAL
+window.closeBooking =
+function(){
 
 document.getElementById(
-"propertyImage"
-).src =
-propertyImages[
-currentImage
-];
+"bookingModal"
+).style.display =
+"none";
 
-}
+};
 
 
-// PREVIOUS IMAGE
-function prevImage(){
+// SUBMIT BOOKING
+window.submitBooking =
+async function(){
 
-currentImage--;
+const name =
+document.getElementById(
+"customerName"
+).value;
+
+const phone =
+document.getElementById(
+"customerPhone"
+).value;
+
+const time =
+document.getElementById(
+"bookingTime"
+).value;
 
 if(
-currentImage < 0
+!name ||
+!phone ||
+!time
 ){
-currentImage =
-propertyImages.length - 1;
-}
-
-document.getElementById(
-"propertyImage"
-).src =
-propertyImages[
-currentImage
-];
-
-}
-
-
-// PAYSTACK PAYMENT
-function payInspection(
-propertyName,
-amount
-){
-
-const email =
-prompt(
-"Enter your email"
+alert(
+"Please complete all fields"
 );
-
-if(!email)
 return;
-
-let handler =
-PaystackPop.setup({
-
-key:
-"pk_test_d45a93ab08c13a816151fa93b201a8af03294932",
-
-email:
-email,
-
-amount:
-amount * 100,
-
-currency:
-"NGN",
-
-metadata:{
-custom_fields:[
-{
-display_name:
-"Property",
-
-variable_name:
-"property_name",
-
-value:
-propertyName
 }
-]
-},
 
-callback:
-function(response){
+
+// CHECK BOOKINGS
+const snapshot =
+await getDocs(
+collection(
+db,
+"bookings"
+)
+);
+
+const saturdayBookings =
+snapshot.docs.length;
+
+if(
+saturdayBookings >= 10
+){
 
 alert(
-`Payment successful for ${propertyName}
-
-Reference:
-${response.reference}`
+"Saturday is fully booked.\n\nContact 2348058179847"
 );
 
-// Replace with YOUR WhatsApp number
-const whatsappNumber =
-"2349027324048";
+return;
 
+}
+
+
+// REFERENCE
+const reference =
+"TRZ-" +
+Math.floor(
+10000 +
+Math.random() *
+90000
+);
+
+
+// SAVE TO FIRESTORE
+await addDoc(
+collection(
+db,
+"bookings"
+),
+{
+
+reference,
+property:
+propertyData.title,
+name,
+phone,
+time,
+date:
+"Saturday"
+
+}
+);
+
+
+// WHATSAPP MESSAGE
 const message =
-`Hi, I just paid for inspection of ${propertyName}.
+`🏠 Property Inspection Booking
 
-Payment Reference:
-${response.reference}`;
+Reference:
+${reference}
 
-const whatsappURL =
-`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+Property:
+${propertyData.title}
+
+Name:
+${name}
+
+Phone:
+${phone}
+
+Date:
+Saturday
+
+Time:
+${time}
+
+Can't make Saturday?
+Contact:
+2348058179847`;
 
 window.open(
-whatsappURL,
+`https://wa.me/2349027324048?text=${encodeURIComponent(message)}`,
 "_blank"
 );
 
-},
-
-onClose:
-function(){
-
 alert(
-"Transaction cancelled"
+`Booking successful!
+
+Reference:
+${reference}`
 );
 
-}
+closeBooking();
 
-});
-
-handler.openIframe();
-
-}
+};

@@ -159,20 +159,82 @@ id="propertyPrice">
 
 <p id="propertyDescription"></p>
 
-<button
-class="pay-btn"
-id="payBtn">
-
-Pay Inspection
-
+<button id="bookBtn" class="details-btn">
+Book Inspection
 </button>
 
 </div>
 
 </section>
 
+<!-- BOOKING POPUP -->
+<div class="booking-modal" id="bookingModal">
+
+  <div class="booking-box">
+
+    <span
+    class="close-modal"
+    onclick="closeBooking()">
+    ×
+    </span>
+
+    <h2>
+      Book Property Inspection
+    </h2>
+
+    <p class="booking-note">
+      Inspections are available only on Saturdays.
+      Maximum of 10 bookings weekly.
+    </p>
+
+    <input
+    type="text"
+    id="customerName"
+    placeholder="Full Name">
+
+    <input
+    type="tel"
+    id="customerPhone"
+    placeholder="Phone Number">
+
+    <select id="bookingTime">
+
+      <option value="">
+        Select Time
+      </option>
+
+      <option>10:00 AM</option>
+      <option>11:00 AM</option>
+      <option>12:00 PM</option>
+      <option>1:00 PM</option>
+      <option>2:00 PM</option>
+      <option>3:00 PM</option>
+
+    </select>
+
+    <button
+    class="book-now-btn"
+    onclick="submitBooking()">
+
+    Confirm Booking
+
+    </button>
+
+    <p class="booking-help">
+
+      Can't make Saturday?
+
+      Contact:
+      2348058179847
+
+    </p>
+
+  </div>
+
+</div>
+
 <script src="https://js.paystack.co/v1/inline.js"></script>
-<script src="property.js"></script>
+<script type="module" src="property.js"></script>
 
 </body>
 </html>
