@@ -1,7 +1,7 @@
-local_backend: true
-
 backend:
-  name: test-repo
+  name: github
+  repo: justin88-creator/Trenz_home-props
+  branch: main
 
 media_folder: "uploads"
 public_folder: "/uploads"
@@ -16,13 +16,11 @@ collections:
         file: "data/properties.json"
 
         fields:
-
           - label: "Properties"
             name: "properties"
             widget: "list"
 
             fields:
-
               - label: "Title"
                 name: "title"
                 widget: "string"
@@ -35,7 +33,6 @@ collections:
                 name: "price"
                 widget: "string"
 
-              # MULTIPLE IMAGES
               - label: "Property Images"
                 name: "images"
                 widget: "list"

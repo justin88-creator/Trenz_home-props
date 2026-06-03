@@ -47,21 +47,6 @@
         "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200"
       ],
       "description": "Executive mansion with cinema room, gym and luxury finishing."
-    },
-    {
-      "size": "24sqm",
-      "bathrooms": 3,
-      "price": "340000000",
-      "inspectionFee": 20000,
-      "status": "For Sale",
-      "location": "anambra",
-      "bedrooms": 3,
-      "title": "bungalow",
-      "images": [
-        "/uploads/capture2.png",
-        "/uploads/for-ai.png"
-      ],
-      "description": "very affordable and luxurious"
     }
   ]
 }
