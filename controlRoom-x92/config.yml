@@ -33,6 +33,7 @@ collections:
                 name: "price"
                 widget: "string"
 
+              # MULTIPLE PROPERTY IMAGES
               - label: "Property Images"
                 name: "images"
                 widget: "list"
