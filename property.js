@@ -3,6 +3,8 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
 import {
 getFirestore,
+doc,
+getDoc,
 collection,
 getDocs,
 addDoc
@@ -33,6 +35,8 @@ appId:
 
 };
 
+
+// INITIALIZE FIREBASE
 const app =
 initializeApp(firebaseConfig);
 
@@ -49,25 +53,54 @@ window.location.search
 const propertyId =
 params.get("id");
 
-let propertyData;
+let propertyData = {};
+let currentImage = 0;
+let propertyImages = [];
 
 
-// LOAD PROPERTY
-fetch("data/properties.json")
-.then(response =>
-response.json()
-)
+// LOAD PROPERTY FROM FIREBASE
+async function loadProperty(){
 
-.then(data => {
+try{
+
+const propertyRef =
+doc(
+db,
+"properties",
+propertyId
+);
+
+const propertySnap =
+await getDoc(
+propertyRef
+);
+
+if(
+!propertySnap.exists()
+){
+
+document.body.innerHTML =
+"<h2>Property not found</h2>";
+
+return;
+
+}
 
 propertyData =
-data.properties[propertyId];
+propertySnap.data();
 
+propertyImages =
+propertyData.images || [];
+
+
+// MAIN IMAGE
 document.getElementById(
 "propertyImage"
 ).src =
-propertyData.images[0];
+propertyImages[0];
 
+
+// DETAILS
 document.getElementById(
 "propertyTitle"
 ).innerText =
@@ -115,12 +148,63 @@ document.getElementById(
 propertyData.status;
 
 
+// BOOK BUTTON
 document.getElementById(
 "bookBtn"
 ).onclick =
 openBooking;
 
-});
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+loadProperty();
+
+
+// IMAGE NEXT
+window.nextImage =
+function(){
+
+currentImage++;
+
+if(
+currentImage >=
+propertyImages.length
+){
+currentImage = 0;
+}
+
+document.getElementById(
+"propertyImage"
+).src =
+propertyImages[currentImage];
+
+};
+
+
+// IMAGE PREV
+window.prevImage =
+function(){
+
+currentImage--;
+
+if(
+currentImage < 0
+){
+currentImage =
+propertyImages.length - 1;
+}
+
+document.getElementById(
+"propertyImage"
+).src =
+propertyImages[currentImage];
+
+};
 
 
 // OPEN MODAL
@@ -166,19 +250,23 @@ document.getElementById(
 "bookingTime"
 ).value;
 
+
 if(
 !name ||
 !phone ||
 !time
 ){
+
 alert(
 "Please complete all fields"
 );
+
 return;
+
 }
 
 
-// CHECK BOOKINGS
+// CHECK SATURDAY BOOKINGS
 const snapshot =
 await getDocs(
 collection(
@@ -189,6 +277,7 @@ db,
 
 const saturdayBookings =
 snapshot.docs.length;
+
 
 if(
 saturdayBookings >= 10
@@ -203,7 +292,7 @@ return;
 }
 
 
-// REFERENCE
+// GENERATE REFERENCE
 const reference =
 "TRZ-" +
 Math.floor(
@@ -213,7 +302,7 @@ Math.random() *
 );
 
 
-// SAVE TO FIRESTORE
+// SAVE BOOKING
 await addDoc(
 collection(
 db,
@@ -222,11 +311,14 @@ db,
 {
 
 reference,
+
 property:
 propertyData.title,
+
 name,
 phone,
 time,
+
 date:
 "Saturday"
 
@@ -260,10 +352,12 @@ Can't make Saturday?
 Contact:
 2348058179847`;
 
+
 window.open(
 `https://wa.me/2349027324048?text=${encodeURIComponent(message)}`,
 "_blank"
 );
+
 
 alert(
 `Booking successful!
