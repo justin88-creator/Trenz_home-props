@@ -3,7 +3,8 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
 import {
 getAuth,
-signInWithEmailAndPassword
+signInWithEmailAndPassword,
+onAuthStateChanged
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
@@ -31,69 +32,66 @@ appId:
 
 };
 
-
-// INITIALIZE FIREBASE
 const app =
-initializeApp(
-firebaseConfig
-);
+initializeApp(firebaseConfig);
 
 const auth =
 getAuth(app);
 
 
-// LOGIN FUNCTION
-window.login =
-function(){
+// AUTO LOGIN CHECK
+onAuthStateChanged(
+auth,
+(user) => {
+
+if(user){
+
+window.location.href =
+"vault-t92-admin.html";
+
+}
+
+}
+);
+
+
+// LOGIN
+document.getElementById(
+"loginBtn"
+).addEventListener(
+"click",
+async () => {
 
 const email =
 document.getElementById(
-"email"
+"adminEmail"
 ).value;
 
 const password =
 document.getElementById(
-"password"
+"adminPassword"
 ).value;
 
-const error =
-document.getElementById(
-"error"
-);
+try{
 
-signInWithEmailAndPassword(
+await signInWithEmailAndPassword(
 auth,
 email,
 password
-)
-
-.then(() => {
-
-error.style.color =
-"green";
-
-error.innerText =
-"Login successful...";
-
-setTimeout(() => {
+);
 
 window.location.href =
-"controlRoom-x92";
+"vault-t92-admin.html";
 
-}, 1000);
+}catch(error){
 
-})
+alert(
+"Incorrect email or password"
+);
 
-.catch((err) => {
+console.error(error);
 
-error.style.color =
-"red";
+}
 
-error.innerText =
-"Wrong email or password";
-
-console.log(err);
-
-});
-
-};
+}
+);
