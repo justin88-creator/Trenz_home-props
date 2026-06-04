@@ -1,3 +1,49 @@
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
+
+authDomain:
+"trenzorhomesadmin.firebaseapp.com",
+
+projectId:
+"trenzorhomesadmin",
+
+storageBucket:
+"trenzorhomesadmin.firebasestorage.app",
+
+messagingSenderId:
+"992246313430",
+
+appId:
+"1:992246313430:web:ea1390019bf9f8f7423477"
+
+};
+
+
+// INITIALIZE FIREBASE
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+
+// DOM
 const propertyGrid =
 document.getElementById(
 "propertyGrid"
@@ -11,48 +57,77 @@ document.getElementById(
 let allProperties = [];
 
 
-// FETCH PROPERTIES
-fetch("data/properties.json")
-.then(response =>
-response.json()
+// FETCH FIREBASE PROPERTIES
+async function loadProperties(){
+
+try{
+
+const q =
+query(
+collection(
+db,
+"properties"
+),
+orderBy(
+"createdAt",
+"desc"
 )
+);
 
-.then(data => {
+const snapshot =
+await getDocs(q);
 
-allProperties =
-data.properties;
+allProperties = [];
+
+snapshot.forEach(doc => {
+
+allProperties.push({
+
+id: doc.id,
+...doc.data()
+
+});
+
+});
 
 
 // AUTO LOCATION DROPDOWN
 loadLocations();
 
 
-// Show newest 6
+// SHOW NEWEST 6
 const latestProperties =
-[...allProperties]
-.reverse()
-.slice(0, 6);
+allProperties.slice(0, 6);
 
 displayProperties(
 latestProperties
 );
 
-})
-
-.catch(error => {
+}catch(error){
 
 console.error(
 "Error loading properties:",
 error
 );
 
-});
+}
+
+}
+
+loadProperties();
 
 
 // LOAD LOCATIONS
 function loadLocations(){
 
-// Get unique locations
+locationSelect.innerHTML = `
+<option value="">
+All Locations
+</option>
+`;
+
+
+// UNIQUE LOCATIONS
 const locations =
 [
 ...new Set(
@@ -63,7 +138,7 @@ property.location
 )
 ];
 
-// Add locations
+
 locations.forEach(
 location => {
 
@@ -86,15 +161,12 @@ properties
 propertyGrid.innerHTML =
 "";
 
+
 properties.forEach(
 (property) => {
 
-const realIndex =
-allProperties.indexOf(
-property
-);
-
 propertyGrid.innerHTML += `
+
 <div class="card">
 
 <img
@@ -143,10 +215,12 @@ ${property.description}
 ${property.price}
 </h4>
 
-<a href="property.html?id=${realIndex}">
+<a href="property.html?id=${property.id}">
+
 <button class="details-btn">
 View Details
 </button>
+
 </a>
 
 </div>
@@ -154,6 +228,7 @@ View Details
 </div>
 
 </div>
+
 `;
 
 });
@@ -224,9 +299,11 @@ matchBedrooms
 
 });
 
+
+// SHOW FILTERED
 displayProperties(
-[...filtered]
-.reverse()
+filtered
 );
 
 });
+
