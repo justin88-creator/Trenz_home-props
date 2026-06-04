@@ -1,3 +1,49 @@
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+
+// FIREBASE CONFIG
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
+
+authDomain:
+"trenzorhomesadmin.firebaseapp.com",
+
+projectId:
+"trenzorhomesadmin",
+
+storageBucket:
+"trenzorhomesadmin.firebasestorage.app",
+
+messagingSenderId:
+"992246313430",
+
+appId:
+"1:992246313430:web:ea1390019bf9f8f7423477"
+
+};
+
+
+// INITIALIZE FIREBASE
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+
+// DOM
 const propertyGrid =
 document.getElementById(
 "propertyGrid"
@@ -8,47 +54,69 @@ document.getElementById(
 "paginationNumbers"
 );
 
-let currentPage = 1;
 
+let currentPage = 1;
 const cardsPerPage = 12;
 
 let allProperties = [];
-let originalProperties = [];
 
-fetch(
-"data/properties.json"
+
+// LOAD FIREBASE PROPERTIES
+async function loadProperties(){
+
+try{
+
+const q =
+query(
+collection(
+db,
+"properties"
+),
+orderBy(
+"createdAt",
+"desc"
 )
-.then(response =>
-response.json()
-)
+);
 
-.then(data => {
+const snapshot =
+await getDocs(q);
 
-originalProperties =
-data.properties;
+allProperties = [];
 
-allProperties =
-[...data.properties]
-.reverse();
+snapshot.forEach(doc => {
+
+allProperties.push({
+
+id: doc.id,
+...doc.data()
+
+});
+
+});
+
 
 displayPage();
 
-})
-
-.catch(error => {
+}catch(error){
 
 console.error(
 "Error loading properties:",
 error
 );
 
-});
+}
+
+}
+
+loadProperties();
 
 
+// DISPLAY PAGE
 function displayPage(){
 
 propertyGrid.innerHTML =
 "";
+
 
 const start =
 (currentPage - 1)
@@ -57,20 +125,19 @@ const start =
 const end =
 start + cardsPerPage;
 
+
 const paginated =
 allProperties.slice(
 start,
 end
 );
 
+
 paginated.forEach(
 (property) => {
 
-const realIndex =
-originalProperties
-.indexOf(property);
-
 propertyGrid.innerHTML += `
+
 <div class="card">
 
 <img
@@ -119,10 +186,12 @@ ${property.description}
 ${property.price}
 </h4>
 
-<a href="property.html?id=${realIndex}">
+<a href="property.html?id=${property.id}">
+
 <button class="details-btn">
 View Details
 </button>
+
 </a>
 
 </div>
@@ -130,6 +199,7 @@ View Details
 </div>
 
 </div>
+
 `;
 
 });
@@ -139,10 +209,12 @@ updatePagination();
 }
 
 
+// PAGINATION
 function updatePagination(){
 
 paginationNumbers.innerHTML =
 "";
+
 
 const totalPages =
 Math.ceil(
@@ -150,7 +222,8 @@ allProperties.length /
 cardsPerPage
 );
 
-// Previous button
+
+// PREVIOUS BUTTON
 document
 .getElementById(
 "prevBtn"
@@ -159,7 +232,7 @@ document
 currentPage === 1;
 
 
-// Number buttons
+// PAGE NUMBERS
 for(
 let i = 1;
 i <= totalPages;
@@ -167,20 +240,25 @@ i++
 ){
 
 paginationNumbers.innerHTML += `
+
 <button
 class="page-number
-${i === currentPage ? "active-page" : ""}"
+${i === currentPage
+? "active-page"
+: ""}"
+
 onclick="goToPage(${i})">
 
 ${i}
 
 </button>
+
 `;
 
 }
 
 
-// Next button
+// NEXT BUTTON
 document
 .getElementById(
 "nextBtn"
@@ -192,17 +270,19 @@ totalPages;
 }
 
 
-function goToPage(
-page
-){
+// GO TO PAGE
+window.goToPage =
+function(page){
 
-currentPage = page;
+currentPage =
+page;
 
 displayPage();
 
-}
+};
 
 
+// NEXT
 document
 .getElementById(
 "nextBtn"
@@ -221,13 +301,17 @@ if(
 currentPage <
 totalPages
 ){
+
 currentPage++;
+
 displayPage();
+
 }
 
 });
 
 
+// PREVIOUS
 document
 .getElementById(
 "prevBtn"
@@ -239,8 +323,11 @@ document
 if(
 currentPage > 1
 ){
+
 currentPage--;
+
 displayPage();
+
 }
 
 });
