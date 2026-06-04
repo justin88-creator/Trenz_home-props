@@ -1,0 +1,242 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+Admin Dashboard
+</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+padding:30px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:30px;
+}
+
+.logout-btn{
+background:red;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.card h2{
+margin-bottom:20px;
+}
+
+input,
+textarea,
+select{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+textarea{
+height:120px;
+resize:none;
+}
+
+button{
+padding:15px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.upload-btn{
+background:#ff2a2a;
+color:white;
+width:100%;
+}
+
+.property-list{
+margin-top:20px;
+}
+
+.property-item{
+padding:15px;
+background:#fafafa;
+border-radius:10px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.delete-btn{
+background:red;
+color:white;
+padding:10px 15px;
+border-radius:8px;
+}
+
+@media(max-width:900px){
+.dashboard-grid{
+grid-template-columns:1fr;
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>
+Trenzor Admin Dashboard
+</h1>
+
+<button
+class="logout-btn"
+id="logoutBtn">
+Logout
+</button>
+
+</div>
+
+<div class="dashboard-grid">
+
+<!-- PROPERTY UPLOAD -->
+<div class="card">
+
+<h2>
+Add Property
+</h2>
+
+<input
+type="text"
+id="title"
+placeholder="Property Title">
+
+<input
+type="text"
+id="location"
+placeholder="Location">
+
+<input
+type="text"
+id="price"
+placeholder="Price">
+
+<input
+type="number"
+id="bedrooms"
+placeholder="Bedrooms">
+
+<input
+type="number"
+id="bathrooms"
+placeholder="Bathrooms">
+
+<input
+type="text"
+id="size"
+placeholder="Size">
+
+<select id="status">
+
+<option>
+For Sale
+</option>
+
+<option>
+For Rent
+</option>
+
+</select>
+
+<textarea
+id="description"
+placeholder="Description">
+</textarea>
+
+<label>
+Property Images
+</label>
+
+<input
+type="file"
+id="images"
+multiple>
+
+<button
+class="upload-btn"
+id="uploadBtn">
+
+Upload Property
+
+</button>
+
+</div>
+
+<!-- PROPERTY LIST -->
+<div class="card">
+
+<h2>
+Uploaded Properties
+</h2>
+
+<div
+id="propertyList"
+class="property-list">
+
+</div>
+
+</div>
+
+</div>
+
+<script
+type="module"
+src="vault-t92-admin.js">
+</script>
+
+</body>
+</html>
+```
