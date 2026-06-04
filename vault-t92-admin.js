@@ -1,230 +1,483 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
 import {
-  getAuth,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+getAuth,
+signOut,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc,
+serverTimestamp,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 
 // FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
-  authDomain: "trenzorhomesadmin.firebaseapp.com",
-  projectId: "trenzorhomesadmin",
-  storageBucket: "trenzorhomesadmin.firebasestorage.app",
-  messagingSenderId: "992246313430",
-  appId: "1:992246313430:web:ea1390019bf9f8f7423477"
+
+apiKey:
+"AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
+
+authDomain:
+"trenzorhomesadmin.firebaseapp.com",
+
+projectId:
+"trenzorhomesadmin",
+
+storageBucket:
+"trenzorhomesadmin.firebasestorage.app",
+
+messagingSenderId:
+"992246313430",
+
+appId:
+"1:992246313430:web:ea1390019bf9f8f7423477"
+
 };
 
 
-// INITIALIZE FIREBASE
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+// INITIALIZE
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getFirestore(app);
 
 
-// CLOUDINARY CONFIG
-const CLOUD_NAME = "dz4ksfngd";
-const UPLOAD_PRESET = "trenz_upload";
+// SECURITY LOCK
+onAuthStateChanged(
+auth,
+(user) => {
+
+if(!user){
+
+window.location.href =
+"controlRoom-x92.html";
+
+}
+
+}
+);
 
 
-// DOM ELEMENTS
-const uploadBtn = document.getElementById("uploadBtn");
-const propertyList = document.getElementById("propertyList");
-const logoutBtn = document.getElementById("logoutBtn");
+// CLOUDINARY
+const CLOUD_NAME =
+"dz4ksfngd";
+
+const UPLOAD_PRESET =
+"trenz_upload";
+
+
+// DOM
+const uploadBtn =
+document.getElementById(
+"uploadBtn"
+);
+
+const propertyList =
+document.getElementById(
+"propertyList"
+);
 
 
 // LOGOUT
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    try {
-      await signOut(auth);
-      window.location.href = "controlRoom-x92.html";
-    } catch (error) {
-      console.error(error);
-      alert("Logout failed");
-    }
-  });
+document.getElementById(
+"logoutBtn"
+)
+.addEventListener(
+"click",
+async () => {
+
+try{
+
+await signOut(auth);
+
+window.location.href =
+"controlRoom-x92.html";
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Logout failed"
+);
+
 }
+
+}
+);
 
 
 // LOAD PROPERTIES
-async function loadProperties() {
-  if (!propertyList) {
-    return;
-  }
+async function loadProperties(){
 
-  propertyList.textContent = "Loading properties...";
+propertyList.innerHTML =
+"Loading properties...";
 
-  try {
-    const q = query(
-      collection(db, "properties"),
-      orderBy("createdAt", "desc")
-    );
+try{
 
-    const snapshot = await getDocs(q);
-    propertyList.innerHTML = "";
+const q =
+query(
+collection(
+db,
+"properties"
+),
+orderBy(
+"createdAt",
+"desc"
+)
+);
 
-    if (snapshot.empty) {
-      propertyList.innerHTML = "<p>No properties uploaded yet.</p>";
-      return;
-    }
+const snapshot =
+await getDocs(q);
 
-    snapshot.forEach((docSnap) => {
-      const property = docSnap.data();
-      const item = document.createElement("div");
-      item.className = "property-item";
+propertyList.innerHTML =
+"";
 
-      const details = document.createElement("div");
-      const titleEl = document.createElement("h3");
-      titleEl.textContent = property.title || "";
-      const locationEl = document.createElement("p");
-      locationEl.textContent = "📍 " + (property.location || "");
-      const priceEl = document.createElement("p");
-      priceEl.textContent = property.price || "";
 
-      details.appendChild(titleEl);
-      details.appendChild(locationEl);
-      details.appendChild(priceEl);
+if(snapshot.empty){
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.className = "delete-btn";
-      deleteBtn.textContent = "Delete";
-      deleteBtn.addEventListener("click", () => deleteProperty(docSnap.id));
+propertyList.innerHTML =
+"<p>No properties uploaded yet.</p>";
 
-      item.appendChild(details);
-      item.appendChild(deleteBtn);
-      propertyList.appendChild(item);
-    });
-  } catch (error) {
-    console.error(error);
-    propertyList.textContent = "Error loading properties.";
-  }
+return;
+
+}
+
+
+snapshot.forEach(
+(docSnap) => {
+
+const property =
+docSnap.data();
+
+propertyList.innerHTML += `
+
+<div class="property-item">
+
+<div>
+
+<h3>
+${property.title}
+</h3>
+
+<p>
+📍 ${property.location}
+</p>
+
+<p>
+${property.price}
+</p>
+
+</div>
+
+<button
+class="delete-btn"
+onclick="deleteProperty('${docSnap.id}')">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}catch(error){
+
+console.error(error);
+
+propertyList.innerHTML =
+"Error loading properties.";
+
+}
+
 }
 
 loadProperties();
 
 
 // DELETE PROPERTY
-window.deleteProperty = async function (id) {
-  const confirmDelete = confirm("Delete this property?");
-  if (!confirmDelete) {
-    return;
-  }
+window.deleteProperty =
+async function(id){
 
-  try {
-    await deleteDoc(doc(db, "properties", id));
-    alert("Property deleted");
-    loadProperties();
-  } catch (error) {
-    console.error(error);
-    alert("Failed to delete property");
-  }
+const confirmDelete =
+confirm(
+"Delete this property?"
+);
+
+if(!confirmDelete)
+return;
+
+
+try{
+
+await deleteDoc(
+doc(
+db,
+"properties",
+id
+)
+);
+
+alert(
+"Property deleted"
+);
+
+loadProperties();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Failed to delete property"
+);
+
+}
+
 };
 
 
 // UPLOAD PROPERTY
-if (uploadBtn) {
-  uploadBtn.addEventListener("click", async () => {
-    try {
-      uploadBtn.innerText = "Uploading...";
+uploadBtn.addEventListener(
+"click",
+async () => {
 
-      const title = document.getElementById("title")?.value.trim() || "";
-      const location = document.getElementById("location")?.value.trim() || "";
-      const price = document.getElementById("price")?.value.trim() || "";
-      const bedrooms = parseInt(document.getElementById("bedrooms")?.value || "0", 10);
-      const bathrooms = parseInt(document.getElementById("bathrooms")?.value || "0", 10);
-      const size = document.getElementById("size")?.value.trim() || "";
-      const status = document.getElementById("status")?.value || "";
-      const description = document.getElementById("description")?.value.trim() || "";
-      const imageFiles = document.getElementById("images")?.files || [];
+try{
 
-      if (
-        !title ||
-        !location ||
-        !price ||
-        !bedrooms ||
-        !bathrooms ||
-        !size ||
-        !description ||
-        imageFiles.length === 0
-      ) {
-        alert("Please fill all fields and select images");
-        uploadBtn.innerText = "Upload Property";
-        return;
-      }
+uploadBtn.disabled =
+true;
 
-      const imageUrls = [];
-      for (let i = 0; i < imageFiles.length; i++) {
-        const formData = new FormData();
-        formData.append("file", imageFiles[i]);
-        formData.append("upload_preset", UPLOAD_PRESET);
+uploadBtn.innerText =
+"Uploading...";
 
-        const response = await fetch(
-          "https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
 
-        const data = await response.json();
-        if (!data?.secure_url) {
-          throw new Error("Image upload failed");
-        }
-        imageUrls.push(data.secure_url);
-      }
+const title =
+document.getElementById(
+"title"
+).value.trim();
 
-      await addDoc(collection(db, "properties"), {
-        title,
-        location,
-        price,
-        bedrooms,
-        bathrooms,
-        size,
-        status,
-        description,
-        images: imageUrls,
-        createdAt: serverTimestamp(),
-      });
+const location =
+document.getElementById(
+"location"
+).value.trim();
 
-      alert("Property uploaded successfully!");
+const price =
+document.getElementById(
+"price"
+).value.trim();
 
-      [
-        "title",
-        "location",
-        "price",
-        "bedrooms",
-        "bathrooms",
-        "size",
-        "status",
-        "description",
-        "images",
-      ].forEach((fieldId) => {
-        const element = document.getElementById(fieldId);
-        if (element) {
-          element.value = "";
-        }
-      });
+const bedrooms =
+parseInt(
+document.getElementById(
+"bedrooms"
+).value
+);
 
-      uploadBtn.innerText = "Upload Property";
-      loadProperties();
-    } catch (error) {
-      console.error(error);
-      alert("Upload failed. Check console.");
-      uploadBtn.innerText = "Upload Property";
-    }
-  });
+const bathrooms =
+parseInt(
+document.getElementById(
+"bathrooms"
+).value
+);
+
+const size =
+document.getElementById(
+"size"
+).value.trim();
+
+const status =
+document.getElementById(
+"status"
+).value;
+
+const description =
+document.getElementById(
+"description"
+).value.trim();
+
+const imageFiles =
+document.getElementById(
+"images"
+).files;
+
+
+// VALIDATION
+if(
+!title ||
+!location ||
+!price ||
+!bedrooms ||
+!bathrooms ||
+!size ||
+!description ||
+imageFiles.length === 0
+){
+
+alert(
+"Please fill all fields and select images"
+);
+
+uploadBtn.disabled =
+false;
+
+uploadBtn.innerText =
+"Upload Property";
+
+return;
+
 }
+
+
+// UPLOAD IMAGES
+const imageUrls = [];
+
+for(
+let i = 0;
+i < imageFiles.length;
+i++
+){
+
+uploadBtn.innerText =
+`Uploading Image ${i + 1}/${imageFiles.length}`;
+
+const formData =
+new FormData();
+
+formData.append(
+"file",
+imageFiles[i]
+);
+
+formData.append(
+"upload_preset",
+UPLOAD_PRESET
+);
+
+const response =
+await fetch(
+`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+{
+method:"POST",
+body:formData
+}
+);
+
+const data =
+await response.json();
+
+imageUrls.push(
+data.secure_url
+);
+
+}
+
+
+// SAVE TO FIRESTORE
+await addDoc(
+collection(
+db,
+"properties"
+),
+{
+
+title,
+location,
+price,
+bedrooms,
+bathrooms,
+size,
+status,
+description,
+
+images:
+imageUrls,
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+
+alert(
+"Property uploaded successfully!"
+);
+
+
+// RESET FORM
+document.getElementById(
+"title"
+).value = "";
+
+document.getElementById(
+"location"
+).value = "";
+
+document.getElementById(
+"price"
+).value = "";
+
+document.getElementById(
+"bedrooms"
+).value = "";
+
+document.getElementById(
+"bathrooms"
+).value = "";
+
+document.getElementById(
+"size"
+).value = "";
+
+document.getElementById(
+"description"
+).value = "";
+
+document.getElementById(
+"images"
+).value = "";
+
+
+uploadBtn.disabled =
+false;
+
+uploadBtn.innerText =
+"Upload Property";
+
+loadProperties();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Upload failed. Check console."
+);
+
+uploadBtn.disabled =
+false;
+
+uploadBtn.innerText =
+"Upload Property";
+
+}
+
+});
