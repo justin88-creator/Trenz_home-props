@@ -1,4 +1,3 @@
-
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
@@ -27,6 +26,7 @@ from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 // FIREBASE CONFIG
 const firebaseConfig = {
+
 apiKey:
 "AIzaSyBd8tdjl7b8Pp65hsnlFtBmmKAPxnMRLM0",
 
@@ -44,6 +44,7 @@ messagingSenderId:
 
 appId:
 "1:992246313430:web:ea1390019bf9f8f7423477"
+
 };
 
 
@@ -121,6 +122,7 @@ document.getElementById(
 
 // EDIT STATE
 let editingId = null;
+
 let existingImages = [];
 
 
@@ -143,7 +145,9 @@ window.location.href =
 
 console.error(error);
 
-alert("Logout failed");
+alert(
+"Logout failed"
+);
 
 }
 
@@ -210,9 +214,18 @@ ${property.title}
 ${property.price}
 </p>
 
+<p>
+📸 ${property.images?.length || 0}
+images
+</p>
+
 </div>
 
-<div style="display:flex; gap:10px;">
+<div
+style="
+display:flex;
+gap:10px;
+">
 
 <button
 style="
@@ -258,6 +271,9 @@ propertyList.innerHTML =
 loadProperties();
 
 
+
+
+
 // EDIT PROPERTY
 window.editProperty =
 async function(id){
@@ -276,8 +292,11 @@ await getDoc(
 propertyRef
 );
 
-if(!propertySnap.exists())
+if(
+!propertySnap.exists()
+){
 return;
+}
 
 const property =
 propertySnap.data();
@@ -287,6 +306,8 @@ editingId = id;
 existingImages =
 property.images || [];
 
+
+// FILL FORM
 document.getElementById(
 "title"
 ).value =
@@ -328,6 +349,7 @@ document.getElementById(
 property.description;
 
 
+// BUTTON SWITCH
 uploadBtn.style.display =
 "none";
 
@@ -337,6 +359,8 @@ updateBtn.style.display =
 cancelEditBtn.style.display =
 "block";
 
+
+// SCROLL TOP
 window.scrollTo({
 top:0,
 behavior:"smooth"
@@ -353,6 +377,202 @@ alert(
 }
 
 };
+
+
+// UPLOAD PROPERTY
+uploadBtn.addEventListener(
+"click",
+async () => {
+
+try{
+
+loadingOverlay.style.display =
+"flex";
+
+loadingText.innerText =
+"Uploading property...";
+
+uploadBtn.disabled =
+true;
+
+
+// FORM VALUES
+const title =
+document.getElementById(
+"title"
+).value.trim();
+
+const location =
+document.getElementById(
+"location"
+).value.trim();
+
+const price =
+document.getElementById(
+"price"
+).value.trim();
+
+const bedrooms =
+parseInt(
+document.getElementById(
+"bedrooms"
+).value
+);
+
+const bathrooms =
+parseInt(
+document.getElementById(
+"bathrooms"
+).value
+);
+
+const size =
+document.getElementById(
+"size"
+).value.trim();
+
+const status =
+document.getElementById(
+"status"
+).value;
+
+const description =
+document.getElementById(
+"description"
+).value.trim();
+
+const imageFiles =
+document.getElementById(
+"images"
+).files;
+
+
+// VALIDATION
+if(
+!title ||
+!location ||
+!price ||
+!bedrooms ||
+!bathrooms ||
+!size ||
+!description ||
+imageFiles.length === 0
+){
+
+alert(
+"Please complete all fields and select images"
+);
+
+loadingOverlay.style.display =
+"none";
+
+uploadBtn.disabled =
+false;
+
+return;
+
+}
+
+
+// MULTIPLE IMAGE UPLOAD
+const imageUrls = [];
+
+for(
+let i = 0;
+i < imageFiles.length;
+i++
+){
+
+loadingText.innerText =
+`Uploading image ${i + 1} of ${imageFiles.length}`;
+
+const formData =
+new FormData();
+
+formData.append(
+"file",
+imageFiles[i]
+);
+
+formData.append(
+"upload_preset",
+UPLOAD_PRESET
+);
+
+const response =
+await fetch(
+`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+{
+method:"POST",
+body:formData
+}
+);
+
+const data =
+await response.json();
+
+imageUrls.push(
+data.secure_url
+);
+
+}
+
+
+// SAVE PROPERTY
+await addDoc(
+collection(
+db,
+"properties"
+),
+{
+
+title,
+location,
+price,
+bedrooms,
+bathrooms,
+size,
+status,
+description,
+
+images:
+imageUrls,
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+
+alert(
+"Property uploaded successfully!"
+);
+
+resetForm();
+
+loadProperties();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Upload failed"
+);
+
+}finally{
+
+loadingOverlay.style.display =
+"none";
+
+uploadBtn.disabled =
+false;
+
+}
+
+}
+);
 
 
 // UPDATE PROPERTY
@@ -375,11 +595,16 @@ document.getElementById(
 
 const newImages = [];
 
+
+// UPLOAD NEW IMAGES
 for(
 let i = 0;
 i < imageFiles.length;
 i++
 ){
+
+loadingText.innerText =
+`Uploading image ${i + 1} of ${imageFiles.length}`;
 
 const formData =
 new FormData();
@@ -412,12 +637,16 @@ data.secure_url
 
 }
 
+
+// KEEP OLD + NEW IMAGES
 const mergedImages =
 [
 ...existingImages,
 ...newImages
 ];
 
+
+// UPDATE FIRESTORE
 await updateDoc(
 doc(
 db,
@@ -425,6 +654,7 @@ db,
 editingId
 ),
 {
+
 title:
 document.getElementById(
 "title"
@@ -471,6 +701,7 @@ document.getElementById(
 
 images:
 mergedImages
+
 }
 );
 
@@ -505,11 +736,12 @@ loadingOverlay.style.display =
 window.deleteProperty =
 async function(id){
 
-if(
-!confirm(
+const confirmDelete =
+confirm(
 "Delete this property?"
-)
-)
+);
+
+if(!confirmDelete)
 return;
 
 try{
@@ -541,6 +773,7 @@ alert(
 };
 
 
+
 // CANCEL EDIT
 cancelEditBtn.addEventListener(
 "click",
@@ -552,6 +785,7 @@ resetForm
 function resetForm(){
 
 editingId = null;
+
 existingImages = [];
 
 document.getElementById(
@@ -580,9 +814,8 @@ document.getElementById(
 
 document.getElementById(
 "status"
-).selectedIndex = 0;
-
-
+).value =
+"For Sale";
 
 document.getElementById(
 "description"
@@ -591,6 +824,7 @@ document.getElementById(
 document.getElementById(
 "images"
 ).value = "";
+
 
 uploadBtn.style.display =
 "block";
@@ -697,11 +931,12 @@ loadBookings();
 window.deleteBooking =
 async function(id){
 
-if(
-!confirm(
+const confirmDelete =
+confirm(
 "Delete this booking?"
-)
-)
+);
+
+if(!confirmDelete)
 return;
 
 try{
@@ -732,167 +967,3 @@ alert(
 
 };
 
-
-// UPLOAD PROPERTY
-uploadBtn.addEventListener(
-"click",
-async () => {
-
-try{
-
-loadingOverlay.style.display =
-"flex";
-
-loadingText.innerText =
-"Uploading property...";
-
-const imageFiles =
-document.getElementById(
-"images"
-).files;
-
-
-if(
-!document.getElementById("title").value ||
-!document.getElementById("location").value ||
-!document.getElementById("price").value ||
-!document.getElementById("bedrooms").value ||
-!document.getElementById("bathrooms").value ||
-!document.getElementById("size").value ||
-!document.getElementById("description").value ||
-imageFiles.length === 0
-){
-
-alert(
-"Please fill all fields and select images"
-);
-
-loadingOverlay.style.display =
-"none";
-
-return;
-}
-
-
-
-const imageUrls = [];
-
-for(
-let i = 0;
-i < imageFiles.length;
-i++
-){
-
-const formData =
-new FormData();
-
-formData.append(
-"file",
-imageFiles[i]
-);
-
-formData.append(
-"upload_preset",
-UPLOAD_PRESET
-);
-
-const response =
-await fetch(
-`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-{
-method:"POST",
-body:formData
-}
-);
-
-const data =
-await response.json();
-
-imageUrls.push(
-data.secure_url
-);
-
-}
-
-await addDoc(
-collection(
-db,
-"properties"
-),
-{
-title:
-document.getElementById(
-"title"
-).value,
-
-location:
-document.getElementById(
-"location"
-).value,
-
-price:
-document.getElementById(
-"price"
-).value,
-
-bedrooms:
-parseInt(
-document.getElementById(
-"bedrooms"
-).value
-),
-
-bathrooms:
-parseInt(
-document.getElementById(
-"bathrooms"
-).value
-),
-
-size:
-document.getElementById(
-"size"
-).value,
-
-status:
-document.getElementById(
-"status"
-).value,
-
-description:
-document.getElementById(
-"description"
-).value,
-
-images:
-imageUrls,
-
-createdAt:
-serverTimestamp()
-}
-);
-
-alert(
-"Property uploaded!"
-);
-
-resetForm();
-
-loadProperties();
-
-}catch(error){
-
-console.error(error);
-
-alert(
-"Upload failed"
-);
-
-}finally{
-
-loadingOverlay.style.display =
-"none";
-
-}
-
-});
