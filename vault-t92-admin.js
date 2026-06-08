@@ -579,6 +579,12 @@ document.getElementById(
 ).value = "";
 
 document.getElementById(
+"status"
+).selectedIndex = 0;
+
+
+
+document.getElementById(
 "description"
 ).value = "";
 
@@ -744,6 +750,30 @@ const imageFiles =
 document.getElementById(
 "images"
 ).files;
+
+
+if(
+!document.getElementById("title").value ||
+!document.getElementById("location").value ||
+!document.getElementById("price").value ||
+!document.getElementById("bedrooms").value ||
+!document.getElementById("bathrooms").value ||
+!document.getElementById("size").value ||
+!document.getElementById("description").value ||
+imageFiles.length === 0
+){
+
+alert(
+"Please fill all fields and select images"
+);
+
+loadingOverlay.style.display =
+"none";
+
+return;
+}
+
+
 
 const imageUrls = [];
 
