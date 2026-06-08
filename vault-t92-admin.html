@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0">
 
 <title>
-Admin Dashboard
+Trenzor Admin Dashboard
 </title>
 
 <style>
@@ -27,15 +27,19 @@ background:#f4f4f4;
 padding:30px;
 }
 
+/* HEADER */
 .header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:30px;
+flex-wrap:wrap;
+gap:15px;
 }
 
 .header h1{
 font-size:30px;
+color:#111;
 }
 
 .logout-btn{
@@ -45,25 +49,33 @@ border:none;
 padding:12px 20px;
 border-radius:10px;
 cursor:pointer;
+font-size:16px;
 }
 
+/* GRID */
 .dashboard-grid{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:
+1fr 1fr;
 gap:25px;
 }
 
+/* CARDS */
 .card{
 background:white;
 padding:25px;
 border-radius:20px;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
+box-shadow:
+0 5px 20px
+rgba(0,0,0,.08);
 }
 
 .card h2{
 margin-bottom:20px;
+color:#111;
 }
 
+/* FORM */
 input,
 textarea,
 select{
@@ -72,6 +84,8 @@ padding:14px;
 margin-bottom:15px;
 border:1px solid #ddd;
 border-radius:10px;
+outline:none;
+font-size:15px;
 }
 
 textarea{
@@ -79,19 +93,18 @@ height:120px;
 resize:none;
 }
 
-button{
-padding:15px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-
 .upload-btn{
 background:#ff2a2a;
 color:white;
 width:100%;
+padding:15px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:16px;
 }
 
+/* PROPERTY LIST */
 .property-list{
 margin-top:20px;
 }
@@ -99,29 +112,65 @@ margin-top:20px;
 .property-item{
 padding:15px;
 background:#fafafa;
-border-radius:10px;
-margin-bottom:10px;
+border-radius:12px;
+margin-bottom:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+gap:10px;
+flex-wrap:wrap;
+border-left:5px solid red;
+}
+
+.property-item h3{
+margin-bottom:6px;
 }
 
 .delete-btn{
 background:red;
 color:white;
 padding:10px 15px;
+border:none;
 border-radius:8px;
+cursor:pointer;
 }
 
+/* BOOKINGS */
+.booking-item{
+padding:15px;
+background:#fafafa;
+border-radius:12px;
+margin-bottom:15px;
+border-left:5px solid red;
+}
 
-/* LOADING OVERLAY */
+.booking-item h4{
+margin-bottom:10px;
+}
+
+.booking-item p{
+margin-bottom:6px;
+}
+
+.delete-booking-btn{
+background:red;
+color:white;
+padding:10px 14px;
+border:none;
+border-radius:8px;
+margin-top:10px;
+cursor:pointer;
+}
+
+/* LOADING */
 .loading-overlay{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.75);
+background:
+rgba(0,0,0,0.75);
 display:none;
 justify-content:center;
 align-items:center;
@@ -134,7 +183,9 @@ padding:40px;
 border-radius:20px;
 text-align:center;
 width:300px;
-box-shadow:0 5px 20px rgba(0,0,0,.2);
+box-shadow:
+0 5px 20px
+rgba(0,0,0,.2);
 }
 
 .spinner{
@@ -165,7 +216,8 @@ font-size:18px;
 font-weight:bold;
 }
 
-@media(max-width:900px){
+/* RESPONSIVE */
+@media(max-width:1000px){
 
 .dashboard-grid{
 grid-template-columns:1fr;
@@ -179,6 +231,7 @@ grid-template-columns:1fr;
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
 
 <h1>
@@ -196,9 +249,10 @@ Logout
 </div>
 
 
+<!-- GRID -->
 <div class="dashboard-grid">
 
-<!-- PROPERTY UPLOAD -->
+<!-- PROPERTY FORM -->
 <div class="card">
 
 <h2>
@@ -269,10 +323,38 @@ Upload Property
 
 </button>
 
+<button
+class="upload-btn"
+id="updateBtn"
+style="
+display:none;
+margin-top:10px;
+background:black;">
+
+Update Property
+
+</button>
+
+<button
+id="cancelEditBtn"
+style="
+display:none;
+width:100%;
+margin-top:10px;
+padding:15px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#ddd;">
+
+Cancel Edit
+
+</button>
+
 </div>
 
 
-<!-- PROPERTY LIST -->
+<!-- PROPERTIES -->
 <div class="card">
 
 <h2>
@@ -283,6 +365,26 @@ Uploaded Properties
 id="propertyList"
 class="property-list">
 
+Loading properties...
+
+</div>
+
+</div>
+
+
+<!-- BOOKINGS -->
+<div class="card">
+
+<h2>
+Inspection Bookings
+</h2>
+
+<div
+id="bookingList"
+class="property-list">
+
+Loading bookings...
+
 </div>
 
 </div>
@@ -290,7 +392,7 @@ class="property-list">
 </div>
 
 
-<!-- LOADING OVERLAY -->
+<!-- LOADING -->
 <div
 id="loadingOverlay"
 class="loading-overlay">
@@ -315,4 +417,3 @@ src="vault-t92-admin.js">
 
 </body>
 </html>
-
