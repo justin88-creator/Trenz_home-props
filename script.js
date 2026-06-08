@@ -35,7 +35,7 @@ appId:
 };
 
 
-// INITIALIZE FIREBASE
+// INITIALIZE
 const app =
 initializeApp(firebaseConfig);
 
@@ -54,10 +54,14 @@ document.getElementById(
 "locationSelect"
 );
 
+
+// STORAGE
 let allProperties = [];
 
+const imageIndexes = {};
 
-// FETCH FIREBASE PROPERTIES
+
+// LOAD PROPERTIES
 async function loadProperties(){
 
 try{
@@ -79,28 +83,26 @@ await getDocs(q);
 
 allProperties = [];
 
-snapshot.forEach(doc => {
+snapshot.forEach(
+(docSnap) => {
 
 allProperties.push({
+id:
+docSnap.id,
 
-id: doc.id,
-...doc.data()
-
+...docSnap.data()
 });
 
 });
 
 
-// AUTO LOCATION DROPDOWN
+// LOAD LOCATIONS
 loadLocations();
 
 
 // SHOW NEWEST 6
-const latestProperties =
-allProperties.slice(0, 6);
-
 displayProperties(
-latestProperties
+allProperties.slice(0,6)
 );
 
 }catch(error){
@@ -120,14 +122,6 @@ loadProperties();
 // LOAD LOCATIONS
 function loadLocations(){
 
-locationSelect.innerHTML = `
-<option value="">
-All Locations
-</option>
-`;
-
-
-// UNIQUE LOCATIONS
 const locations =
 [
 ...new Set(
@@ -138,6 +132,10 @@ property.location
 )
 ];
 
+locationSelect.innerHTML =
+`<option value="">
+All Locations
+</option>`;
 
 locations.forEach(
 location => {
@@ -161,17 +159,61 @@ properties
 propertyGrid.innerHTML =
 "";
 
-
 properties.forEach(
-(property) => {
+(property,index) => {
+
+imageIndexes[
+property.id
+] = 0;
 
 propertyGrid.innerHTML += `
 
 <div class="card">
 
+<div class="card-slider">
+
+<button
+class="card-slider-btn prev"
+onclick="
+changeCardImage(
+event,
+'${property.id}',
+-1
+)
+">
+
+❮
+
+</button>
+
 <img
-src="${property.images[0]}"
+class="card-image"
+id="cardImage-${property.id}"
+src="${property.images?.[0] || ''}"
 alt="${property.title}">
+
+<button
+class="card-slider-btn next"
+onclick="
+changeCardImage(
+event,
+'${property.id}',
+1
+)
+">
+
+❯
+
+</button>
+
+<div class="image-count"
+id="imageCount-${property.id}">
+
+1/${property.images?.length || 1}
+
+</div>
+
+</div>
 
 <div class="card-content">
 
@@ -236,7 +278,81 @@ View Details
 }
 
 
-// SEARCH BUTTON
+// IMAGE PAGINATION
+window.changeCardImage =
+function(
+event,
+propertyId,
+direction
+){
+
+event.preventDefault();
+
+event.stopPropagation();
+
+const property =
+allProperties.find(
+p => p.id === propertyId
+);
+
+if(
+!property ||
+!property.images ||
+property.images.length === 0
+){
+return;
+}
+
+imageIndexes[
+propertyId
+] += direction;
+
+
+// LOOP
+if(
+imageIndexes[propertyId]
+>=
+property.images.length
+){
+
+imageIndexes[
+propertyId
+] = 0;
+
+}
+
+if(
+imageIndexes[propertyId]
+< 0
+){
+
+imageIndexes[
+propertyId
+] =
+property.images.length - 1;
+
+}
+
+
+// CHANGE IMAGE
+document.getElementById(
+`cardImage-${propertyId}`
+).src =
+property.images[
+imageIndexes[propertyId]
+];
+
+
+// UPDATE COUNTER
+document.getElementById(
+`imageCount-${propertyId}`
+).innerText =
+`${imageIndexes[propertyId] + 1}/${property.images.length}`;
+
+};
+
+
+// SEARCH FILTER
 document
 .getElementById(
 "searchBtn"
@@ -299,11 +415,9 @@ matchBedrooms
 
 });
 
-
-// SHOW FILTERED
 displayProperties(
 filtered
+.slice(0,6)
 );
 
 });
-
