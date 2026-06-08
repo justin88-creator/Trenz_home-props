@@ -54,11 +54,13 @@ const propertyId =
 params.get("id");
 
 let propertyData = {};
+
 let currentImage = 0;
+
 let propertyImages = [];
 
 
-// LOAD PROPERTY FROM FIREBASE
+// LOAD PROPERTY
 async function loadProperty(){
 
 try{
@@ -98,6 +100,39 @@ document.getElementById(
 "propertyImage"
 ).src =
 propertyImages[0];
+
+
+// CREATE THUMBNAILS
+const thumbnailContainer =
+document.getElementById(
+"thumbnailContainer"
+);
+
+thumbnailContainer.innerHTML =
+"";
+
+propertyImages.forEach(
+(image,index) => {
+
+thumbnailContainer.innerHTML += `
+
+<img
+src="${image}"
+class="thumbnail ${
+index === 0
+? 'active-thumb'
+: ''
+}"
+
+onclick="
+changeImage(
+${index}
+)
+">
+
+`;
+
+});
 
 
 // DETAILS
@@ -165,7 +200,24 @@ console.error(error);
 loadProperty();
 
 
-// IMAGE NEXT
+// CHANGE IMAGE
+window.changeImage =
+function(index){
+
+currentImage =
+index;
+
+document.getElementById(
+"propertyImage"
+).src =
+propertyImages[index];
+
+updateActiveThumbnail();
+
+};
+
+
+// NEXT IMAGE
 window.nextImage =
 function(){
 
@@ -183,10 +235,12 @@ document.getElementById(
 ).src =
 propertyImages[currentImage];
 
+updateActiveThumbnail();
+
 };
 
 
-// IMAGE PREV
+// PREVIOUS IMAGE
 window.prevImage =
 function(){
 
@@ -204,7 +258,40 @@ document.getElementById(
 ).src =
 propertyImages[currentImage];
 
+updateActiveThumbnail();
+
 };
+
+
+// ACTIVE THUMBNAIL
+function updateActiveThumbnail(){
+
+document
+.querySelectorAll(
+".thumbnail"
+)
+.forEach(
+(img,index) => {
+
+img.classList.remove(
+"active-thumb"
+);
+
+if(
+index ===
+currentImage
+){
+
+img.classList.add(
+"active-thumb"
+);
+
+}
+
+}
+);
+
+}
 
 
 // OPEN MODAL
@@ -266,7 +353,7 @@ return;
 }
 
 
-// CHECK SATURDAY BOOKINGS
+// CHECK BOOKINGS
 const snapshot =
 await getDocs(
 collection(
@@ -292,7 +379,7 @@ return;
 }
 
 
-// GENERATE REFERENCE
+// REFERENCE
 const reference =
 "TRZ-" +
 Math.floor(
@@ -326,7 +413,7 @@ date:
 );
 
 
-// WHATSAPP MESSAGE
+// WHATSAPP
 const message =
 `🏠 Property Inspection Booking
 
@@ -352,7 +439,6 @@ Can't make Saturday?
 Contact:
 2348058179847`;
 
-
 window.open(
 `https://wa.me/2349027324048?text=${encodeURIComponent(message)}`,
 "_blank"
@@ -369,3 +455,4 @@ ${reference}`
 closeBooking();
 
 };
+

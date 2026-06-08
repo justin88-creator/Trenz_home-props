@@ -9,7 +9,9 @@
 name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Property Details</title>
+<title>
+Property Details
+</title>
 
 <link
 rel="stylesheet"
@@ -18,88 +20,207 @@ href="style.css">
 <style>
 
 body{
-  background:#f4f4f4;
+background:#f4f4f4;
+padding:20px;
 }
 
+/* CARD */
 .property-details{
-  max-width:1200px;
-  margin:50px auto;
-  background:white;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 5px 20px rgba(0,0,0,.1);
+max-width:1200px;
+margin:50px auto;
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:
+0 5px 20px
+rgba(0,0,0,.1);
 }
 
+/* SLIDER */
 .image-slider{
-  position:relative;
+position:relative;
+background:#eee;
 }
 
 .property-image{
-  width:100%;
-  height:500px;
-  object-fit:cover;
+width:100%;
+height:550px;
+object-fit:cover;
+display:block;
 }
 
+/* BUTTONS */
 .slider-btn{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  background:rgba(0,0,0,.6);
-  color:white;
-  border:none;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:25px;
-  z-index:10;
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:
+rgba(0,0,0,.6);
+color:white;
+border:none;
+width:55px;
+height:55px;
+border-radius:50%;
+cursor:pointer;
+font-size:25px;
+z-index:10;
 }
 
 .prev{
-  left:20px;
+left:20px;
 }
 
 .next{
-  right:20px;
+right:20px;
 }
 
+/* THUMBNAILS */
+.thumbnail-container{
+display:flex;
+gap:10px;
+padding:15px;
+overflow-x:auto;
+background:#fff;
+}
+
+.thumbnail{
+width:120px;
+height:90px;
+object-fit:cover;
+border-radius:10px;
+cursor:pointer;
+border:3px solid transparent;
+transition:.3s;
+flex-shrink:0;
+}
+
+.thumbnail:hover{
+transform:scale(1.05);
+}
+
+.active-thumb{
+border-color:#ff2a2a;
+}
+
+/* DETAILS */
 .details-content{
-  padding:40px;
+padding:40px;
 }
 
 .details-content h1{
-  margin:20px 0;
-  font-size:2.5rem;
+margin:20px 0;
+font-size:2.5rem;
 }
 
 .price{
-  color:#ff2a2a;
-  font-size:2rem;
-  margin-bottom:20px;
+color:#ff2a2a;
+font-size:2rem;
+margin-bottom:20px;
 }
 
 .property-info{
-  display:flex;
-  gap:30px;
-  margin:20px 0;
-  flex-wrap:wrap;
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin:25px 0;
 }
 
 .property-info p{
-  background:#f4f4f4;
-  padding:12px 20px;
-  border-radius:10px;
+background:#f4f4f4;
+padding:12px 20px;
+border-radius:10px;
 }
 
 .pay-btn{
-  background:#ff2a2a;
-  color:white;
-  border:none;
-  padding:15px 25px;
-  border-radius:10px;
-  cursor:pointer;
-  margin-top:30px;
-  font-size:18px;
+background:#ff2a2a;
+color:white;
+border:none;
+padding:15px 25px;
+border-radius:10px;
+cursor:pointer;
+margin-top:30px;
+font-size:18px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+.property-image{
+height:320px;
+}
+
+.details-content{
+padding:25px;
+}
+
+.details-content h1{
+font-size:1.8rem;
+}
+
+.thumbnail{
+width:90px;
+height:70px;
+}
+
+}
+
+/* BOOKING MODAL */
+.booking-modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+rgba(0,0,0,.7);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.booking-box{
+background:white;
+padding:30px;
+border-radius:20px;
+width:90%;
+max-width:450px;
+position:relative;
+}
+
+.close-modal{
+position:absolute;
+top:20px;
+right:20px;
+font-size:30px;
+cursor:pointer;
+}
+
+.booking-box input,
+.booking-box select{
+width:100%;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+border:1px solid #ddd;
+}
+
+.book-now-btn{
+width:100%;
+padding:15px;
+background:#ff2a2a;
+color:white;
+border:none;
+border-radius:10px;
+margin-top:20px;
+cursor:pointer;
+font-size:16px;
+}
+
+.booking-note,
+.booking-help{
+margin-top:15px;
+color:#666;
 }
 
 </style>
@@ -110,12 +231,15 @@ body{
 
 <section class="property-details">
 
+<!-- IMAGE SLIDER -->
 <div class="image-slider">
 
 <button
 class="slider-btn prev"
 onclick="prevImage()">
+
 ❮
+
 </button>
 
 <img
@@ -125,11 +249,21 @@ class="property-image">
 <button
 class="slider-btn next"
 onclick="nextImage()">
+
 ❯
+
 </button>
 
 </div>
 
+<!-- THUMBNAILS -->
+<div
+id="thumbnailContainer"
+class="thumbnail-container">
+
+</div>
+
+<!-- DETAILS -->
 <div class="details-content">
 
 <span
@@ -152,88 +286,121 @@ id="propertyPrice">
 <div class="property-info">
 
 <p id="propertyBeds"></p>
+
 <p id="propertyBaths"></p>
+
 <p id="propertySize"></p>
 
 </div>
 
 <p id="propertyDescription"></p>
 
-<button id="bookBtn" class="details-btn">
+<button
+id="bookBtn"
+class="details-btn">
+
 Book Inspection
+
 </button>
 
 </div>
 
 </section>
 
-<!-- BOOKING POPUP -->
-<div class="booking-modal" id="bookingModal">
 
-  <div class="booking-box">
+<!-- BOOKING MODAL -->
+<div
+class="booking-modal"
+id="bookingModal">
 
-    <span
-    class="close-modal"
-    onclick="closeBooking()">
-    ×
-    </span>
+<div class="booking-box">
 
-    <h2>
-      Book Property Inspection
-    </h2>
+<span
+class="close-modal"
+onclick="closeBooking()">
 
-    <p class="booking-note">
-      Inspections are available only on Saturdays.
-      Maximum of 10 bookings weekly.
-    </p>
+×
 
-    <input
-    type="text"
-    id="customerName"
-    placeholder="Full Name">
+</span>
 
-    <input
-    type="tel"
-    id="customerPhone"
-    placeholder="Phone Number">
+<h2>
+Book Property Inspection
+</h2>
 
-    <select id="bookingTime">
+<p class="booking-note">
 
-      <option value="">
-        Select Time
-      </option>
+Inspections are available only on Saturdays.
+Maximum of 10 bookings weekly.
 
-      <option>10:00 AM</option>
-      <option>11:00 AM</option>
-      <option>12:00 PM</option>
-      <option>1:00 PM</option>
-      <option>2:00 PM</option>
-      <option>3:00 PM</option>
+</p>
 
-    </select>
+<input
+type="text"
+id="customerName"
+placeholder="Full Name">
 
-    <button
-    class="book-now-btn"
-    onclick="submitBooking()">
+<input
+type="tel"
+id="customerPhone"
+placeholder="Phone Number">
 
-    Confirm Booking
+<select id="bookingTime">
 
-    </button>
+<option value="">
+Select Time
+</option>
 
-    <p class="booking-help">
+<option>
+10:00 AM
+</option>
 
-      Can't make Saturday?
+<option>
+11:00 AM
+</option>
 
-      Contact:
-      2348058179847
+<option>
+12:00 PM
+</option>
 
-    </p>
+<option>
+1:00 PM
+</option>
 
-  </div>
+<option>
+2:00 PM
+</option>
+
+<option>
+3:00 PM
+</option>
+
+</select>
+
+<button
+class="book-now-btn"
+onclick="submitBooking()">
+
+Confirm Booking
+
+</button>
+
+<p class="booking-help">
+
+Can't make Saturday?
+
+Contact:
+2348058179847
+
+</p>
 
 </div>
 
-<script type="module" src="property.js"></script>
+</div>
+
+<script
+type="module"
+src="property.js">
+</script>
 
 </body>
 </html>
