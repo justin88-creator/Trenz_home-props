@@ -253,9 +253,14 @@ ${property.description}
 
 <div class="card-footer">
 
+
 <h4>
-${property.price}
+₦${Number(
+property.price
+).toLocaleString()}
 </h4>
+
+
 
 <a href="property.html?id=${property.id}">
 

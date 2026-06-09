@@ -212,7 +212,7 @@ ${property.title}
 
 
 <p>
-$${Number(
+₦${Number(
 property.price
 ).toLocaleString()}
 </p>
