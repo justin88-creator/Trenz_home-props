@@ -5,25 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Properties</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome for hamburger icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
  
   <!-- NAVBAR -->
   <header class="navbar">
+
     <div class="logo">
-      <span class="T-color">Trenzor Homes</span> and Properties
+      <span class="T-color">Trenzor Homes</span>
+      and Properties
     </div>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="mailto:trenzoradvertisingagency@email.com">Email Us</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-    <button class="explore-btn" onclick="window.location.href='properties.html'">
-      Explore Properties
+
+    <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false">
+      <i class="fa fa-bars"></i>
     </button>
+
+    <div class="nav-group">
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="mailto:trenzoradvertisingagency@email.com">Email Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <button class="explore-btn" onclick="window.location.href='properties.html'">
+        Explore Properties
+      </button>
+    </div>
+
   </header>
  
   <section class="property-section">
@@ -39,6 +52,33 @@
   </section>
  
   <script type="module" src="properties.js"></script>
+  <script>
+    // Mobile nav toggle
+    (function(){
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navGroup = document.querySelector('.nav-group');
+      const navLinks = document.querySelectorAll('.nav-links a');
+
+      if (menuToggle && navGroup) {
+        menuToggle.addEventListener('click', () => {
+          const isOpen = navGroup.classList.toggle('open');
+          menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        navLinks.forEach(link => link.addEventListener('click', () => {
+          navGroup.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        }));
+
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('.navbar') && navGroup.classList.contains('open')) {
+            navGroup.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    })();
+  </script>
  
 </body>
 </html>
