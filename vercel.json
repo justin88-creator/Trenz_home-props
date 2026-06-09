@@ -1,6 +1,4 @@
 {
-"trailingSlash": true,
-
 "rewrites": [
 {
 "source": "/controlRoom-x92",
