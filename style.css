@@ -27,6 +27,22 @@ body{
   font-weight:bold;
 }
 
+.menu-toggle{
+  display:none;
+  background:transparent;
+  border:2px solid #ff1616;
+  color:#ff1616;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.nav-group{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
 .T-color{
   color:#ff1616;
 }
@@ -284,13 +300,62 @@ body{
 @media(max-width:768px){
 
   .navbar{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:20px 6%;
+  }
+
+  .menu-toggle{
+    display:block;
+  }
+
+  .nav-group{
+    width:100%;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    margin:0 auto;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 20px 40px rgba(0,0,0,.12);
+    padding:20px;
     flex-direction:column;
-    gap:20px;
+    gap:16px;
+    transform:translateY(-10px);
+    opacity:0;
+    visibility:hidden;
+    transition:all .25s ease;
+    z-index:999;
+  }
+
+  .nav-group.open{
+    transform:translateY(0);
+    opacity:1;
+    visibility:visible;
   }
 
   .nav-links{
-    flex-wrap:wrap;
-    justify-content:center;
+    flex-direction:column;
+    gap:16px;
+    width:100%;
+  }
+
+  .nav-links li{
+    width:100%;
+  }
+
+  .nav-links a{
+    display:block;
+    width:100%;
+    padding:12px 16px;
+    border-radius:12px;
+  }
+
+  .explore-btn{
+    width:100%;
   }
 
   .hero{
