@@ -1,3 +1,10 @@
 {
-  "trailingSlash": true
+"trailingSlash": true,
+
+"rewrites": [
+{
+"source": "/controlRoom-x92",
+"destination": "/controlRoom-x92.html"
+}
+]
 }
