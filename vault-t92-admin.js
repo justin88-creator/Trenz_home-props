@@ -210,9 +210,14 @@ ${property.title}
 📍 ${property.location}
 </p>
 
+
 <p>
-${property.price}
+$${Number(
+property.price
+).toLocaleString()}
 </p>
+
+
 
 <p>
 📸 ${property.images?.length || 0}
@@ -407,10 +412,15 @@ document.getElementById(
 "location"
 ).value.trim();
 
+
 const price =
+Number(
 document.getElementById(
 "price"
-).value.trim();
+).value
+);
+
+
 
 const bedrooms =
 parseInt(
@@ -665,10 +675,15 @@ document.getElementById(
 "location"
 ).value,
 
+
+
+
 price:
+Number(
 document.getElementById(
 "price"
-).value,
+).value
+),
 
 bedrooms:
 parseInt(

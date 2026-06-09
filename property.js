@@ -147,10 +147,15 @@ document.getElementById(
 "📍 " +
 propertyData.location;
 
+
 document.getElementById(
 "propertyPrice"
 ).innerText =
-propertyData.price;
+"₦" +
+Number(
+propertyData.price
+).toLocaleString();
+
 
 document.getElementById(
 "propertyBeds"
